@@ -95,9 +95,9 @@ sockio.sockets.on('connection', (socket) => {
     if (users < 3) {
       socket.emit('joined', room, socket.id)
       /*
-			if (users > 1) {
-				socket.to(room).emit('otherjoin', room);//除自己之外
-			}*/
+      if (users > 1) {
+        socket.to(room).emit('otherjoin', room);//除自己之外
+      }*/
     } else {
       socket.leave(room)
       socket.emit('full', room, socket.id)

@@ -41,10 +41,10 @@ layui.use('layer', function () {
 socket.emit('join', room)
 
 var friends = {
-    list: document.querySelector('ul.people'),
-    all: document.querySelectorAll('.left .person'),
-    name: '',
-  },
+  list: document.querySelector('ul.people'),
+  all: document.querySelectorAll('.left .person'),
+  name: '',
+},
   chat = {
     container: document.querySelector('.container .right'),
     current: null,
@@ -58,7 +58,7 @@ friends.all.forEach(function (f) {
   })
 })
 
-function setAciveChat(f) {
+function setAciveChat (f) {
   friends.list.querySelector('.active').classList.remove('active')
   f.classList.add('active')
   chat.current = chat.container.querySelector('.active-chat')
@@ -73,7 +73,7 @@ function setAciveChat(f) {
   socket.emit('join', room)
 }
 
-function btnCallClick() {
+function btnCallClick () {
   layer.open({
     type: 1,
     title: false,
@@ -107,7 +107,7 @@ function btnCallClick() {
   }, 500)
 }
 
-function sendMessage(type, data) {
+function sendMessage (type, data) {
   console.log(type, data)
   socket.emit('message', room, { type: type, data: data })
 }
@@ -255,15 +255,15 @@ layui.use('upload', function () {
         //失败重发
       }
     },
-    error: function () {},
+    error: function () { },
   })
 })
 
-function handleError(err) {
+function handleError (err) {
   console.error(err)
 }
 
-function start() {
+function start () {
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
     console.error('the getUserMedia is not supported!')
     return
@@ -279,7 +279,7 @@ function start() {
     navigator.mediaDevices.getUserMedia(constraints).then(getMediaStream).catch(handleError)
   }
 }
-function getMediaStream(stream) {
+function getMediaStream (stream) {
   if (localStream) {
     stream.getAudioTracks().forEach((track) => {
       localStream.addTrack(track)
@@ -295,18 +295,20 @@ function getMediaStream(stream) {
   }
 }
 
-function createPeerConnection() {
+function createPeerConnection () {
   console.log('create RTCPeerConnection!')
   if (!pc) {
     pc = new RTCPeerConnection(pcConfig)
     pc.onicecandidate = (e) => {
+      console.log(e);
       if (e.candidate) {
         var data = {
           type: 'candidate',
-          label: event.candidate.sdpMLineIndex,
-          id: event.candidate.sdpMid,
-          candidate: event.candidate.candidate,
+          label: e.candidate.sdpMLineIndex,
+          id: e.candidate.sdpMid,
+          candidate: e.candidate.candidate,
         }
+        console.log(data);
         //socket.emit("message", room, { type: 6, data: data })
         sendMessage(6, data)
       } else {
@@ -319,7 +321,7 @@ function createPeerConnection() {
   }
   return
 }
-function bindTracks() {
+function bindTracks () {
   console.log('bind tracks into RTCPeerConnection!')
 
   if (pc === null || pc === undefined) {
@@ -339,20 +341,20 @@ function bindTracks() {
   })
 }
 
-function getAnswer(desc) {
+function getAnswer (desc) {
   pc.setLocalDescription(desc)
   sendMessage(5, desc)
   //socket.emit("message", room, { type: 5, data: desc });
 }
 
-function getOffer(desc) {
+function getOffer (desc) {
   pc.setLocalDescription(desc)
   offerdesc = desc
   sendMessage(4, desc)
   //socket.emit("message", room, { type: 3, data: desc });
 }
 
-function call() {
+function call () {
   var offerOptions = {
     offerToRecieveAudio: 1,
     offerToRecieveVideo: 1,
@@ -364,24 +366,24 @@ function call() {
     })
 }
 
-function getRemoteStream(e) {
+function getRemoteStream (e) {
   remoteStream = e.streams[0]
   remoteVideo.srcObject = e.streams[0]
 }
 
-function leave() {
+function leave () {
   closeLocalMedia()
   closePc()
 }
 
-function closePc() {
+function closePc () {
   if (pc) {
     offerdesc = null
     pc.close()
     pc = null
   }
 }
-function closeLocalMedia() {
+function closeLocalMedia () {
   if (localStream && localStream.getTracks()) {
     localStream.getTracks().forEach((track) => {
       track.stop()
@@ -391,7 +393,7 @@ function closeLocalMedia() {
 }
 
 document.onkeydown = (event) => {
-  if (event.keyCode == 13) {
+  if (event.key == 'Enter') {
     send.click()
   }
 }
