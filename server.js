@@ -63,7 +63,7 @@ var options = {
 //https server
 var https_server = https.createServer(options, app)
 var http_server = http.createServer(app)
-var sockio = socketIo(https_server)
+var sockio = socketIo.listen(https_server)
 http_server.listen(3000, '0.0.0.0')
 https_server.listen(443, '0.0.0.0')
 
